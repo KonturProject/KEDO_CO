@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Генератор КП</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <form method="POST" action="/generate">
+        <h2>Клиент</h2>
+        <label>ФИО клиента: <input type="text" name="fio" required></label>
+
+        <h2>Договорённости (фиксированный блок)</h2>
+        <label><input type="checkbox" name="agreement_discount"> Указать скидку</label>
+        <input type="number" name="discount_value" placeholder="Скидка (%)" min="0" max="100">
+
+        <h2>Вложения и ссылки (фиксированный блок)</h2>
+        <p>Вложения:</p>
+        {% for key, value in attachments.items() %}
+            <label><input type="checkbox" name="attachment_{{ key | replace(' ', '_') }}">{{ value }}</label><br>
+        {% endfor %}
+        <p>Ссылки:</p>
+        {% for key, value in links.items() %}
+            <label><input type="checkbox" name="link_{{ key | replace(' ', '_') }}">{{ key }}</label><br>
+        {% endfor %}
+
+        <h2>Опциональные фиксированные блоки</h2>
+        <label><input type="checkbox" name="include_about" checked> О компании</label><br>
+        <label><input type="checkbox" name="include_description" checked> Описание сервиса</label>
+
+        <h2>Коммерческий блок</h2>
+        {% for item, data in pricing.items() %}
+            <label>{{ item }} ({{ data.base_price }} {{ data.unit_price }}):
+                <input type="number" name="{{ item }}" min="0" value="0">
+                <input type="number" name="discount_{{ item }}" max="{{ data.max_discount }}" placeholder="Скидка (%)" min="0">
+            </label><br>
+        {% endfor %}
+        <label>Срок действия скидки: <input type="date" name="discount_date" required></label>
+
+        <h2>Порядок плавающих блоков</h2>
+        <ul id="block-list" ondragover="allowDrop(event)" ondrop="drop(event)">
+            <li draggable="true" ondragstart="drag(event)" id="commercial">Коммерческое предложение</li>
+            <li draggable="true" ondragstart="drag(event)" id="benefits">Выгоды использования</li>
+        </ul>
+        <input type="hidden" name="block_order" id="block-order">
+
+        <h2>Дополнительные выгоды</h2>
+        <label>Дополнительная выгода: <textarea name="custom_benefit"></textarea></label>
+
+        <button type="submit">Сгенерировать КП</button>
+    </form>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
