@@ -138,8 +138,7 @@ function updatePreview() {
     for (const [item, qty] of Object.entries(quantities)) {
         if (qty > 0) {
             const base_price = KEDO[item].base_price;
-            const discounted_price = roundNumber(base_price * (1 - discounts[item] / 100));
-            commercial_lines.push(`- ${item} (${qty} ${KEDO[item].unit}, скидка ${discounts[item]}%): ${formatPrice(discounted_price * qty)}`);
+            commercial_lines.push(`- ${item} (${qty} ${KEDO[item].unit}): ${formatPrice(base_price * qty)}`);
         }
     }
     commercial_lines.push(`Базовая стоимость системы: ${formatPrice(base_cost)}`);
@@ -256,8 +255,7 @@ function generateKP() {
     for (const [item, qty] of Object.entries(quantities)) {
         if (qty > 0) {
             const base_price = KEDO[item].base_price;
-            const discounted_price = roundNumber(base_price * (1 - discounts[item] / 100));
-            commercial_lines.push(`- ${item} (${qty} ${KEDO[item].unit}): ${formatPrice(discounted_price * qty)}`);
+            commercial_lines.push(`- ${item} (${qty} ${KEDO[item].unit}): ${formatPrice(base_price * qty)}`);
         }
     }
     commercial_lines.push(`Базовая стоимость системы: ${formatPrice(base_cost)}`);
